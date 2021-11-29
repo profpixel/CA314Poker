@@ -48,7 +48,7 @@ class Player:
             return 90 + high_card
         if len(set([i.suit for i in self.hand])) == 1:
             return 75 + high_card
-        if vals == [range(vals[0], vals[-1] + 1)]:
+        if vals == list(range(vals[0], vals[-1] + 1)):
             return 60 + high_card
         if vals[0] == vals[2] or vals[1] == vals[3] or vals[2] == vals[4]:
             return 45 + high_card
