@@ -40,7 +40,7 @@ class Player:
     def hand_type(self) -> int:
         vals = sorted([i.value for i in self.hand])
         high_card = vals[-1]
-        if len(set([i.suit for i in self.hand])) == 1 and vals == [range(vals[0], vals[-1] + 1)]:
+        if len(set([i.suit for i in self.hand])) == 1 and vals == list(range(vals[0], vals[-1] + 1)):
             return 120 + high_card
         if vals[0] == vals[3] or vals[1] == vals[4]:
             return 105 + high_card
