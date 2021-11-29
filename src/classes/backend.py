@@ -38,12 +38,9 @@ class Player:
         self.hand.append(card)
 
     def hand_type(self) -> int:
-        """
-        Calculates the value of the player's hand and returns the value of the player's hand and their highest card
-        """
         vals = sorted([i.value for i in self.hand])
         high_card = vals[-1]
-        if len(set([i.suit for i in self.hand])) == 1 and vals[-1] - vals[0] == 4:
+        if len(set([i.suit for i in self.hand])) == 1 and vals == [range(vals[0], vals[-1] + 1)]:
             return 120 + high_card
         if vals[0] == vals[3] or vals[1] == vals[4]:
             return 105 + high_card
@@ -51,7 +48,7 @@ class Player:
             return 90 + high_card
         if len(set([i.suit for i in self.hand])) == 1:
             return 75 + high_card
-        if vals[-1] - vals[0] == 4:
+        if vals == [range(vals[0], vals[-1] + 1)]:
             return 60 + high_card
         if vals[0] == vals[2] or vals[1] == vals[3] or vals[2] == vals[4]:
             return 45 + high_card
@@ -64,8 +61,9 @@ class Player:
     def pay(self, payment: int):
         self.cash += int
 
-    def raise_pot(self, amount: int):
+    def raise_pot(self, amount: int, pot: 'Pot'):
         self.bet += amount
+        pot.raise_pot(amount, self)
 
     def call(self):
         """
