@@ -53,15 +53,35 @@ class GameScreen(Screen):
     pass
 
 
+class WinScreen(Screen):
+    pass
+
+
 class RootScreen(ScreenManager):
     pass
 
 
 class PokerApp(App):
+    def __init__(self):
+        super().__init__
+        self.deck = None
+        self.player = None
+        self.built = None
+
+
+    def player_init(self, deck, player):
+        self.deck = deck
+        self.player = player
+
     def build(self):
         Config.set("graphics", "width", "1350")
         Config.set("graphics", "height", "650")
         return RootScreen()
 
 if __name__ == '__main__':
-    PokerApp().run()
+    deck = Deck()
+    player = Player("John", [], 0, 10)
+    deck.dist_cards([player], 2)
+    app = PokerApp()
+    app.player_init(deck, player)
+    app.run()
