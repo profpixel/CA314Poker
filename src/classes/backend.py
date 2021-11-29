@@ -1,6 +1,7 @@
 from typing import List, Tuple
 import random
 
+
 class Card:
     def __init__(self, suit: str, value: int):
         self.suit = suit
@@ -10,52 +11,72 @@ class Card:
             self.value = value
 
     def __str__(self) -> str:
-        Names = {
-        11: "Jack", 12: "Queen", 13: "King", 14: "Ace",
+        names = {
+            2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten",
+            11: "Jack", 12: "Queen", 13: "King", 14: "Ace",
         }
-        return "{} of {}".format(Names[self.value], self.suit)
-    
+        return "{} of {}".format(names[self.value], self.suit)
+
     def __eq__(self, other: 'Card') -> bool:
         return self.value == other.value
-    
-    def __gt__(self, other: 'Card') -> bool:
-        return self.value > self.other
-    
-    def __lt__(self, other: 'Card') -> bool:
-        return self.value > self.other
 
-    
+    def __gt__(self, other: 'Card') -> bool:
+        return self.value > other.value
+
+    def __lt__(self, other: 'Card') -> bool:
+        return self.value < other.value
+
+
 class Player:
-    def __init__(self, name: str, hand: List[Card], bet: int=0, cash: int=0):
+    def __init__(self, name: str, hand: List[Card], bet: int = 0, cash: int = 0):
         self.name = name
         self.hand = hand
         self.bet = bet
         self.cash = cash
-    
-    def draw(self, card: Card):
-        self.hand += card
 
-    def hand_type(self) -> Tuple[int, int]:
+    def draw(self, card: Card):
+        self.hand.append(card)
+
+    def hand_type(self) -> int:
         """
         Calculates the value of the player's hand and returns the value of the player's hand and their highest card
         """
+        vals = sorted([i.value for i in self.hand])
+        high_card = vals[-1]
+        if len(set([i.suit for i in self.hand])) == 1 and vals[-1] - vals[0] == 4:
+            return 120 + high_card
+        if vals[0] == vals[3] or vals[1] == vals[4]:
+            return 105 + high_card
+        if (vals[0] == vals[2] and vals[3] == vals[4]) or (vals[0] == vals[1] and vals[2] == vals[4]):
+            return 90 + high_card
+        if len(set([i.suit for i in self.hand])) == 1:
+            return 75 + high_card
+        if vals[-1] - vals[0] == 4:
+            return 60 + high_card
+        if vals[0] == vals[2] or vals[1] == vals[3] or vals[2] == vals[4]:
+            return 45 + high_card
+        if (vals[0] == vals[1] and (vals[2] == vals[3] or vals[3] == vals[4])) or (vals[1] == vals[2] and vals[3] == vals[4]):
+            return 30 + high_card
+        if any([vals[i] == vals[i+1] for i in range(len(vals) - 1)]):
+            return 15 + high_card
+        return high_card
 
     def pay(self, payment: int):
         self.cash += int
-    
+
     def raise_pot(self, amount: int):
         self.bet += amount
-    
+
     def call(self):
         """
         Call bet
         """
-    
+
     def check(self):
         """
         Check bet
         """
-    
+
     def fold(self):
         """
         Fold
@@ -64,12 +85,11 @@ class Player:
 
 class Deck:
     def __init__(self):
-        self.cards = [[Card(suit, val) for suit in ["Hearts", "Diamonds", "Spades", "Clubs"]] for val in range(1, 15)]
+        self.cards = [Card(suit, val) for suit in ["Hearts", "Diamonds", "Spades", "Clubs"] for val in range(1, 15)]
         self.shuffle()
-    
+
     def shuffle(self):
         random.shuffle(self.cards)
-    
 
     def dist_cards(self, players: List[Player], amount: int):
         for player in players:
@@ -78,21 +98,22 @@ class Deck:
 
 
 class Pot:
-    def __init__(self, value: int=0):
-        self.value = 0
+    def __init__(self, value: int = 0):
+        self.value = value
         self.last_raise: Player = None
-    
+
     def raise_pot(self, amount: int, player: Player):
-        self.pot += amount
+        self.value += amount
         self.last_raise = player
 
 
 def main():
-    MyCard = Card("Hearts", 11)
-    BadCard = Card("Diamonds", 1)
-    
-    PlayerOne = Player([MyCard, BadCard])
-    print(PlayerOne.hand_type())
+    deck = Deck()
+    player = Player("test", [])
+    deck.dist_cards([player], 5)
+    print([str(i) for i in sorted(player.hand)])
+    print(player.hand_type())
+
 
 if __name__ == '__main__':
     main()
