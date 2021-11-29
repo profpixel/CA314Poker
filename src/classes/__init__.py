@@ -1,7 +1,7 @@
-from frontend import DublinHoldEm
+from frontend import PokerApp
 
 def main():
-    DublinHoldEm().run()
+    PokerApp().run()
 
 if __name__ == '__main__':
     main()
