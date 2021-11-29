@@ -62,3 +62,6 @@ class PokerApp(App):
         Config.set("graphics", "width", "1350")
         Config.set("graphics", "height", "650")
         return RootScreen()
+
+if __name__ == '__main__':
+    PokerApp().run()
